@@ -1,125 +1,70 @@
-// Chuck your data into the depths of the localStorage variable...
-function save() {
-	localStorage.setItem('save', btoa(JSON.stringify(game)));
-	if (game.as) {
-		setTimeout(save, game.asintv * 1000);
-	}
+var game;
+var diffMultiplier = 1;
+var gameLoopIntervalId = 0;
+var diff = 0;
+var breakPoint = false;
+let framerates = [];
+
+function updateDisplay() {
+	updateElements();
+	for (let i in game.upgrades) game.upgrades[i].domUpdate();
+	for (let i in game.unfunityUpgrades) game.unfunityUpgrades[i].domUpdate();
 }
 
-// Clear the save file
-function wipe(nc) {
-	if (!nc) {
-		if (confirm('Do you want to delete ALL of your progress?!?')) {
-			clearAll();
-			game = new Game();
-			firstTime();
-			save();
-		}
+function gameLoop(diff) {
+	if (breakPoint && !diff) return;
+	// 1 diff = 0.001 seconds
+	var thisUpdate = new Date().getTime();
+	diff = (diff || Math.min(thisUpdate - game.lastUpdate, 21600000)) * diffMultiplier;
+	let fr = Math.floor(1000 / diff);
+	framerates.push(fr);
+	if (framerates.length > 25) framerates.shift();
+	let frames = Math.floor(framerates.reduce((a, b) => a + b) / framerates.length);
+	document.getElementById("frames").innerText = frames;
+	//if (diffMultiplier > 1) console.log("SHAME")
+	//else if (diffMultiplier < 1) console.log("SLOWMOTION")
+
+	game.onlineUnfun = D(1);
+	if (game.axioms[0]) game.onlineUnfun.timesBy(2);
+	if (game.axioms[2]) game.unfunityUpgrades.superUnfun.costScale = D(6);
+	if (game.axioms[4]) game.upgrades.dimStab.levelCap = D(15);
+	else if (game.upgradesBought.dimStab.gt(game.upgrades.dimStab.levelCap)) game.upgradesBought.dimStab = game.upgrades.dimStab.levelCap;
+	else game.upgrades.dimStab.levelCap = D(10);
+
+	game.ufph = D.pow(2, game.unfunityUpgBought.doubleUnfun).mul(game.onlineUnfun);
+
+	let hours = diff / 3.6e6;
+	game.unfunitypoints = game.unfunitypoints.add(D.pow(2, game.unfunityUpgBought.doubleUnfun).mul(hours).mul(game.onlineUnfun));
+	for (let i in game.prestige) game.prestige[i].update(diff);
+	updateDisplay();
+	game.lastUpdate = thisUpdate;
+}
+
+function startGame() {
+	document.getElementById("title").dataset.tooltip = "By Reinhardt, Nyan Cat, Naruyoko";
+	if (!nyanLoad()) newGame();
+	for (let i in game.axioms) document.querySelector(`#axioms`).children[i].children[0].dataset.tooltip = atooltips[i];
+	tab(0);
+	Mousetrap.bind("m", () => {
+		game.maxAllLayers();
+	});
+	var thisUpdate = new Date().getTime();
+	diff = (thisUpdate - game.lastUpdate) * diffMultiplier;
+	document.getElementById("timeoffline").innerText = getDisplayTime(diff);
+	if (diff) {
+		let hours = diff / 3.6e6;
+		game.unfunitypoints = game.unfunitypoints.add(D.pow(2, game.unfunityUpgBought.doubleUnfun).mul(hours).mul(game.offlineUnfun));
+		document.getElementById("unfungain").innerText = f(D.pow(2, game.unfunityUpgBought.doubleUnfun).mul(hours).mul(game.offlineUnfun));
+		document.getElementById("gainspan").style.display = "block";
 	} else {
-		clearAll();
-		game = new Game();
-		firstTime();
-		save();
+		document.getElementById("gainspan").style.display = "none";
 	}
+	setInterval(function () {
+		if (!errorPopped) nyanSave();
+	}, 1000);
+	startInterval();
 }
 
-// Retrieve your data from the depths of the localStorage variable...
-function load() {
-	if (localStorage.getItem('save') != undefined && localStorage.getItem('save') != 'undefined' && localStorage.getItem('save') != null) {
-		clearAll();
-		try {
-			game = new Game(JSON.parse(atob(localStorage.getItem('save'))));
-		} catch(e) {
-			console.warn('Outdated save, updating');
-			game = new Game(JSON.parse(localStorage.getItem('save')));
-		}
-		save();
-		return true;
-	} else {
-		return false;
-	}
-}
-
-// Export a save file
-function exp() {
-	// prompt('Exported Save: ', btoa(JSON.stringify(game)));
-	let output = document.getElementById('expout');
-	let parent = output.parentElement;
-	parent.style.display = "";
-	output.value = btoa(JSON.stringify(game));
-	output.onblur = function() {
-		parent.style.display = "none";
-	}
-	output.focus();
-	output.select();
-	try {
-		document.execCommand('copy');
-		output.blur();
-		alert('Save copied to clipboard');
-	} catch(e) {
-		console.warn(e);
-		alert('Failed to copy to clipboard');
-	}
-}
-
-// Import a save file
-function imp() {
-	let b64 = prompt('Enter a save file: ');
-	let c = true;
-	if (b64 == null) {
-		c = false;
-	}
-	let json;
-	try {
-		json = atob(b64);
-	} catch(e) {
-		c = false;
-		alert(e);
-	}
-	if (c) {
-		if (confirm('Are you sure? This will override your current progress!')) {
-			clearAll();
-			game = new Game(JSON.parse(json));
-			save();
-			return true;
-		} else {
-			return false;
-		}
-	}
-}
-
-let game;
-let fpsOut;
-let filterStrength = 20;
-let frameTime = 0, lastLoop = new Date, thisLoop;
-
-function init() {
-	fpsOut = document.getElementById('fps');
-	
-	if (!load()) {
-		wipe(true);
-	}
-	
-	document.getElementById('asintv').value = game.asintv;
-	document.getElementById('notation').value = game.notation;
-	setInterval(loop, 50);
-}
-
-function firstTime() {
-	game.prestige[joa([0])] = new Layer(oa([0]), 100);
-}
-
-function loop() {
-	game.update();
-	setElems();
-	updatePrestiges();
-	auto();
-	fps();
-}
-
-function fps() {
-	var thisFrameTime = (thisLoop = new Date) - lastLoop;
-	frameTime += (thisFrameTime - frameTime) / filterStrength;
-	lastLoop = thisLoop;
-	fpsOut.innerHTML = (1000 / frameTime).toFixed(0);
+function startInterval() {
+	gameLoopIntervalId = setInterval(gameLoop, 33);
 }

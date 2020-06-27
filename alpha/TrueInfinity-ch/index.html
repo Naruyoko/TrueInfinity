@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>真無限</title>
+		
+		<link href='css/styled_buttons.css' rel='stylesheet'></link>
+		<link href='css/stylesheet.css' rel='stylesheet'></link>
+		<link href='assets/img/favicon.png' rel='icon'></link>
+		
+		<link href='css/default.css' rel='stylesheet'></link>
+		
+		<meta charset="UTF-8">
+		<meta name="description" content="More Infinite than Any Game to Date!" />
+		<meta name="keywords" content="Idle,Game,Indie,True,Infinity,Incremental" />
+		<meta name="author" content="Reinhardt (Logan McDonald)" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="google-site-verification" content="x4dhb8CYA-CckrCCj2Mc0qbrX6Yw9WmxAZieFdIQjQk" />
+		
+		<script src='js/OmegaNum.js'></script>
+		<script src='js/notation.js'></script>
+		<script src='js/main.js'></script>
+		<script src='js/game.js'></script>
+		<script src='js/set.js'></script>
+		<script src='js/create.js'></script>
+		<script src='js/function.js'></script>
+		<script src='js/automation.js'></script>
+		
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-146664738-1"></script>
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag(){dataLayer.push(arguments);}
+			gtag('js', new Date());
+
+			gtag('config', 'UA-146664738-1');
+		</script>
+	</head>
+	<body onload='tabs()'>
+		<div style='display: none;'>
+			<textarea id='expout'></textarea>
+		</div>
+		<div id='game'>
+			<div id='topbar'>
+				<p style='float: left;' style='width: 250px'>真無限 | α1.4.3 | 作者：Reinhardt | 翻譯：ItMarki | FPS:</p><p id='fps' style='width: 20px; margin: 0; display: inline; float: left'></p>
+				
+				<marquee style='float: left; display: inline-block; width: calc(100vw - 730px); margin-left: 7.5px; margin-right: 7.5px;'>
+					這遊戲只能在電腦上運行，手機/平板使用者對不起 :(
+					&nbsp;
+					歡迎來到真無限，一個有慢進度的完全平衡遊戲，如果你覺得30分鐘內有eee10叫做慢進度。
+					&nbsp;
+					如果遊戲不能運行，請在選項裏硬重置。
+					&nbsp;
+					我喜歡大數字。
+					&nbsp;
+					感謝ShianaraPlayZ在我開發一星期內測試這遊戲！你對我坐下來每天8小時編程，不用學校假期做其他東西是個很大的鼓勵。
+					&nbsp;
+					感謝NGCMan提供Discord伺服器。
+				</marquee>
+				
+				<span style='float: right; width: 320px;'>
+					|&nbsp;<a href='https://discord.gg/Jgrystv'>Discord</a>
+					<a href='html/about.html'>如何遊玩</a>
+					<a href='html/patch_notes.html'>更新日誌</a>
+					<a href='html/source.html'>編碼</a>
+				</span>
+			</div>
+			
+			<div id='sidebar'>
+				<button id='toggleSB' class='sbb' onclick='toggleSB()'>>></button>
+				<br><br>
+				<button id='mt0' class='mt sbb grey' onclick='mt(0)'>維</button>
+				<button id='mt1' class='mt sbb blue' onclick='mt(1)'>選</button>
+				<button id='mt2' class='mt sbb aqua' onclick='mt(2)'>統</button>
+				<button id='mt3' class='mt sbb red' onclick='mt(3)'>成</button>
+				<button id='mt4alt' class='mt sbb yellow mt4' onclick='mt(4)'>？</button>
+				<button id='mt4' class='mt sbb yellow mt4' onclick='mt(4)'>自</button>
+				<p id='credit'></p>
+			</div>
+			
+			<div id='main'>
+				<div id='mtb0' class='maintab'>
+					<div id='layerswrapper'>
+					</div>
+				</div>
+				<div id='mtb1' class='maintab'>
+					<button class='sbb aqua half height x2'onclick='ot(0)' >存檔</button><button class='sbb aqua half height x2' onclick='ot(1)' >其他</button>
+					<hr><br><hr>
+					<div id='otb0' class='optiontab'>
+						<button id='save' class='sbb green' onclick='save()'>保存</button>
+						<button id='load' class='sbb aqua' onclick='load()'>加載</button>
+						<br><br>
+						<button id='as' class='sbb green' onclick='toggleas()'>自動保存</button>
+						<p id='asintvp'>每<input id='asintv'></input>秒自動保存<p>
+						<br><br>
+						<button id='exp' class='sbb green' onclick='exp()'>導出</button>
+						<button id='imp' class='sbb aqua' onclick='imp()'>導入</button>
+						<br><br>
+						<button id='ws' class='sbb red' onclick='wipe()'>硬重置</button>
+					</div>
+					<div id='otb1' class='optiontab'>
+						<select id='notation' class='sbb aqua'>
+							<option value='sci'>科學記號</option>
+							<option value='eng'>工程記號</option>
+							<option value='log'>對數記號</option>
+							<option value='stn'>標準記號</option>
+							<option value='msc'>混合式科學記號</option>
+							<option value='men'>混合式工程記號</option>
+							<option value='mlg'>混合式對數記號</option>
+							<option value='uar'>上箭嘴記號</option>
+							<option value='chn'>連鎖箭嘴記號</option>
+							<option value='ban'>鳥數陣記號</option>
+							<option value='hyp'>超E記號</option>
+							<option value='inf'>無限記號</option>
+							<option value='tin'>真無限記號</option>
+						</select>
+					</div>
+				</div>
+				<div id='mtb2' class='maintab'>
+					<div id='stats'>
+					</div>
+				</div>
+				<div id='mtb3' class='maintab'>
+					成就：待續
+				</div>
+				<div id='mtb4' class='maintab'>
+					<img id='autolock' src='assets/img/locked.png' title='這功能在到達速度後解鎖' alt='這功能在到達速度後解鎖' style='margin-top: 25px;'>
+					<div id='autodiv'>
+					</div>
+					<hr>
+					<button id='autoauto' class='sbb red' onclick='buyautoauto()'>自動化自動的購買: eee100 反物質</button>
+					<hr>
+					<img id='autobulklock' src='assets/img/locked.png' title='這功能在到達p200後解鎖' alt='這功能在到達p200後解鎖' style='margin-top: 25px;' width='256' height='256'>
+					<div id='autobulkdiv'>
+						<button id='buybulkauto' class='sbb red' onclick='buybulkprestige()'>增加自動聲望級數：</button>
+						<div class='horizflex'>
+							<div id='ll0' class='levellight red'>第1級</div>
+							<div id='ll1' class='levellight red'>第2級</div>
+							<div id='ll2' class='levellight red'>第3級</div>
+							<div id='ll3' class='levellight red'>第4級</div>
+							<div id='ll4' class='levellight red'>第5級</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script>
+			init();
+		</script>
+	</body>
+</html>
