@@ -19,7 +19,7 @@ function gameLoop(diff) {
 	let fr = Math.floor(1000 / diff);
 	framerates.push(fr);
 	if (framerates.length > 25) framerates.shift();
-	let frames = Math.floor(framerates.reduce((a, b) => a + b) / framerates.length);
+	let frames = (framerates.reduce((a, b) => a + b) / framerates.length).toPrecision(2);
 	document.getElementById("frames").innerText = frames;
 	//if (diffMultiplier > 1) console.log("SHAME")
 	//else if (diffMultiplier < 1) console.log("SLOWMOTION")

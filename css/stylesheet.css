@@ -161,6 +161,8 @@ hr {
 #layers {
 	width: 100%;
 	height: 100%;
+	display: flex;
+	overflow-x: auto;
 }
 
 #tab1 {
@@ -184,6 +186,10 @@ hr {
 }
 
 #linkscontainer {
+	position: absolute;
+	top: 0;
+	right: 0;
+	z-index: -1;
 	transition: 2s;
 	white-space: nowrap;
 	min-height: 35px;
@@ -276,11 +282,14 @@ hr {
 
 .l {
 	height: 100%;
+	min-width: 200px;
 	width: 200px;
 	float: left;
 	text-align: center;
 	overflow: hidden;
 	position: relative;
+	display: flex;
+	flex-flow: column;
 }
 
 .rt {
@@ -322,6 +331,7 @@ hr {
 	width: 100%;
 	height: 100%;
 	margin: 5px;
+	overflow: auto;
 }
 
 .upg {
